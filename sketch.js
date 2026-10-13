@@ -34,6 +34,53 @@ function setup() {
       } catch (e) {}
     }
   });
+
+  const vo = document.getElementById("vo");
+  let actx = null;
+  let decoded = null;
+  let curSrc = null;
+  let stopTimer = null;
+  fetch(encodeURI("assets/devils tower poem.m4a"))
+    .then((r) => r.arrayBuffer())
+    .then((ab) => {
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      return actx.decodeAudioData(ab);
+    })
+    .then((b) => {
+      decoded = b;
+    })
+    .catch(() => {});
+
+  function playWord(s, e) {
+    if (decoded && actx) {
+      if (curSrc) {
+        try {
+          curSrc.stop();
+        } catch (err) {}
+      }
+      if (actx.state === "suspended") actx.resume();
+      const src = actx.createBufferSource();
+      src.buffer = decoded;
+      src.connect(actx.destination);
+      src.start(0, max(0, s - 0.02), e - s + 0.06);
+      curSrc = src;
+    } else {
+      vo.pause();
+      vo.currentTime = max(0, s - 0.02);
+      vo.play();
+      clearTimeout(stopTimer);
+      stopTimer = setTimeout(() => vo.pause(), (e - s + 0.06) * 1000);
+    }
+  }
+
+  document.querySelectorAll("#poem .w").forEach((el) => {
+    el.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const s = parseFloat(el.dataset.s);
+      const e = parseFloat(el.dataset.e);
+      if (!isNaN(s) && !isNaN(e)) playWord(s, e);
+    });
+  });
 }
 
 function imageRect() {

@@ -17,10 +17,43 @@ body {
   z-index: 0;
 }
 
+#poem {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+#poem .page {
+  position: relative;
+  width: min(100vw, 177.7778vh);
+  height: min(100vh, 56.25vw);
+  container-type: size;
+}
+
+#poem .w {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 1.51cqw;
+  line-height: 1;
+  color: #fff;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+#poem .w:hover {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
 canvas {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   cursor: pointer;
 }
