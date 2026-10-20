@@ -1,9 +1,11 @@
 const LABEL = "CLICK TO REMOVE HARRIET";
 const ROCK_DELAY = 15000;
-const ROCK_GAP = 1100;
 
 let rocksImgs = [];
 let rocks = [];
+let rockCells = [];
+let rockOrder = [];
+let rockTimes = [];
 let fg;
 let nextRock = 0;
 let startTime = 0;
@@ -35,6 +37,7 @@ function setup() {
   ghostImg.filter(GRAY);
   rocksImgs.forEach((r) => r.filter(GRAY));
   startTime = millis();
+  planRocks();
   current = portrait;
   layer = createGraphics(windowWidth, windowHeight);
   fg = createGraphics(windowWidth, windowHeight);
@@ -138,14 +141,45 @@ function draw() {
   updateRocks();
 }
 
-function spawnRock(i) {
+function planRocks() {
+  rockCells = [];
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 5; c++) rockCells.push({ c: c, r: r });
+  }
+  for (let i = rockCells.length - 1; i > 0; i--) {
+    const j = floor(random(i + 1));
+    const t = rockCells[i];
+    rockCells[i] = rockCells[j];
+    rockCells[j] = t;
+  }
+  rockOrder = [];
+  for (let i = 0; i < 10; i++) rockOrder.push(i);
+  for (let i = rockOrder.length - 1; i > 0; i--) {
+    const j = floor(random(i + 1));
+    const t = rockOrder[i];
+    rockOrder[i] = rockOrder[j];
+    rockOrder[j] = t;
+  }
+  rockTimes = [];
+  let t = ROCK_DELAY;
+  for (let i = 0; i < 10; i++) {
+    t += random(800, 3000);
+    rockTimes.push(t);
+  }
+}
+
+function spawnRock(i, cell) {
   const img = rocksImgs[i];
   const h = random(0.9, 1.3) * height;
   const w = h * (img.width / img.height);
+  const cw = width / 5;
+  const ch = height / 2;
+  const cx = (cell.c + 0.5) * cw + random(-0.25, 0.25) * cw;
+  const cy = (cell.r + 0.5) * ch + random(-0.2, 0.2) * ch;
   rocks.push({
     img: img,
-    x: random(-0.05 * w, width - 0.95 * w),
-    y: random(-0.05 * h, height - 0.95 * h),
+    x: cx - w / 2,
+    y: cy - h / 2,
     w: w,
     h: h,
     front: random() < 0.5
@@ -153,9 +187,9 @@ function spawnRock(i) {
 }
 
 function updateRocks() {
-  const elapsed = millis() - startTime - ROCK_DELAY;
-  while (nextRock < 10 && elapsed > nextRock * ROCK_GAP) {
-    spawnRock(nextRock);
+  const elapsed = millis() - startTime;
+  while (nextRock < 10 && elapsed > rockTimes[nextRock]) {
+    spawnRock(rockOrder[nextRock], rockCells[nextRock]);
     nextRock++;
   }
   noStroke();
@@ -196,7 +230,10 @@ function mousePressed() {
     const rk = rocks[i];
     if (mouseX >= rk.x && mouseX <= rk.x + rk.w && mouseY >= rk.y && mouseY <= rk.y + rk.h) {
       rocks.splice(i, 1);
-      spawnRock(rocksImgs.indexOf(rk.img));
+      spawnRock(
+        rocksImgs.indexOf(rk.img),
+        rockCells[floor(random(rockCells.length))]
+      );
       return;
     }
   }
