@@ -42,6 +42,11 @@ function setup() {
   layer = createGraphics(windowWidth, windowHeight);
   fg = createGraphics(windowWidth, windowHeight);
   fg.elt.classList.add("fg");
+  fg.elt.style.position = "fixed";
+  fg.elt.style.top = "0";
+  fg.elt.style.left = "0";
+  fg.elt.style.zIndex = "5";
+  fg.elt.style.pointerEvents = "none";
   document.body.appendChild(fg.elt);
   drawCurrent();
   textFont("Helvetica");
@@ -170,12 +175,12 @@ function planRocks() {
 
 function spawnRock(i, cell) {
   const img = rocksImgs[i];
-  const h = random(0.9, 1.3) * height;
+  const h = random(1.2, 1.6) * height;
   const w = h * (img.width / img.height);
   const cw = width / 5;
   const ch = height / 2;
-  const cx = (cell.c + 0.5) * cw + random(-0.25, 0.25) * cw;
-  const cy = (cell.r + 0.5) * ch + random(-0.2, 0.2) * ch;
+  const cx = (cell.c + 0.5) * cw + random(-0.3, 0.3) * cw;
+  const cy = (cell.r + 0.5) * ch + random(-0.25, 0.25) * ch;
   rocks.push({
     img: img,
     x: cx - w / 2,
