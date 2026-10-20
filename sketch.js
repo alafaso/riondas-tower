@@ -1,5 +1,11 @@
 const LABEL = "CLICK TO REMOVE HARRIET";
+const ROCK_DELAY = 30000;
+const ROCK_GAP = 1100;
 
+let rocksImgs = [];
+let rocks = [];
+let nextRock = 0;
+let startTime = 0;
 let portrait;
 let removedImg;
 let layer;
@@ -15,6 +21,9 @@ function preload() {
   portrait = loadImage(PORTRAIT_DATA);
   removedImg = loadImage(REMOVED_DATA);
   ghostImg = loadImage(encodeURI("assets/harriet by herself.png"));
+  for (let i = 1; i <= 10; i++) {
+    rocksImgs.push(loadImage(encodeURI("assets/rock " + i + ".png")));
+  }
 }
 
 function setup() {
@@ -23,6 +32,8 @@ function setup() {
   portrait.filter(GRAY);
   removedImg.filter(GRAY);
   ghostImg.filter(GRAY);
+  rocksImgs.forEach((r) => r.filter(GRAY));
+  startTime = millis();
   current = portrait;
   layer = createGraphics(windowWidth, windowHeight);
   drawCurrent();
@@ -120,6 +131,36 @@ function draw() {
   text(LABEL, width / 2, label.y + label.h / 2);
 
   if (haunting) drawGhost();
+  updateRocks();
+}
+
+function spawnRock(i) {
+  const img = rocksImgs[i];
+  const s = random(0.07, 0.17) * min(width, height);
+  const w = s;
+  const h = s * (img.height / img.width);
+  rocks.push({
+    img: img,
+    x: random(10, width - w - 10),
+    y: random(10, height - h - 10),
+    w: w,
+    h: h,
+    born: millis()
+  });
+}
+
+function updateRocks() {
+  const elapsed = millis() - startTime - ROCK_DELAY;
+  while (nextRock < 10 && elapsed > nextRock * ROCK_GAP) {
+    spawnRock(nextRock);
+    nextRock++;
+  }
+  noStroke();
+  for (const r of rocks) {
+    const k = constrain((millis() - r.born) / 260, 0, 1);
+    const e = 1 - pow(1 - k, 3);
+    image(r.img, r.x, r.y, r.w * e, r.h * e);
+  }
 }
 
 function drawGhost() {
@@ -148,6 +189,14 @@ function drawGhost() {
 }
 
 function mousePressed() {
+  for (let i = rocks.length - 1; i >= 0; i--) {
+    const rk = rocks[i];
+    if (mouseX >= rk.x && mouseX <= rk.x + rk.w && mouseY >= rk.y && mouseY <= rk.y + rk.h) {
+      rocks.splice(i, 1);
+      spawnRock(rocksImgs.indexOf(rk.img));
+      return;
+    }
+  }
   const r = imageRect();
   if (mouseX < r.x || mouseX > r.x + r.w || mouseY < r.y || mouseY > r.y + r.h) return;
   current = current === portrait ? removedImg : portrait;
@@ -165,4 +214,8 @@ function windowResized() {
   layer = createGraphics(windowWidth, windowHeight);
   drawCurrent();
   label = makeLabel();
+  for (const rk of rocks) {
+    rk.x = constrain(rk.x, 10, max(10, width - rk.w - 10));
+    rk.y = constrain(rk.y, 10, max(10, height - rk.h - 10));
+  }
 }
