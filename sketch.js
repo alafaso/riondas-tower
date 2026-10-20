@@ -1,5 +1,5 @@
 const LABEL = "CLICK TO REMOVE HARRIET";
-const ROCK_DELAY = 30000;
+const ROCK_DELAY = 15000;
 const ROCK_GAP = 1100;
 
 let rocksImgs = [];
