@@ -4,6 +4,7 @@ const ROCK_GAP = 1100;
 
 let rocksImgs = [];
 let rocks = [];
+let fg;
 let nextRock = 0;
 let startTime = 0;
 let portrait;
@@ -36,6 +37,9 @@ function setup() {
   startTime = millis();
   current = portrait;
   layer = createGraphics(windowWidth, windowHeight);
+  fg = createGraphics(windowWidth, windowHeight);
+  fg.elt.classList.add("fg");
+  document.body.appendChild(fg.elt);
   drawCurrent();
   textFont("Helvetica");
   textSize(22);
@@ -143,7 +147,8 @@ function spawnRock(i) {
     x: random(10, width - w - 10),
     y: random(10, height - h - 10),
     w: w,
-    h: h
+    h: h,
+    front: random() < 0.5
   });
 }
 
@@ -154,8 +159,10 @@ function updateRocks() {
     nextRock++;
   }
   noStroke();
+  fg.clear();
   for (const r of rocks) {
-    image(r.img, r.x, r.y, r.w, r.h);
+    if (r.front) fg.image(r.img, r.x, r.y, r.w, r.h);
+    else image(r.img, r.x, r.y, r.w, r.h);
   }
 }
 
@@ -208,6 +215,7 @@ function mousePressed() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   layer = createGraphics(windowWidth, windowHeight);
+  fg.resizeCanvas(windowWidth, windowHeight);
   drawCurrent();
   label = makeLabel();
   for (const rk of rocks) {
