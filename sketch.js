@@ -5,10 +5,16 @@ let removedImg;
 let layer;
 let label;
 let current;
+let ghostImg;
+let haunting = false;
+let ghostX = 0;
+let ghostY = 0;
+let ghostFace = 1;
 
 function preload() {
   portrait = loadImage(PORTRAIT_DATA);
   removedImg = loadImage(REMOVED_DATA);
+  ghostImg = loadImage(encodeURI("assets/harriet by herself.png"));
 }
 
 function setup() {
@@ -16,6 +22,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   portrait.filter(GRAY);
   removedImg.filter(GRAY);
+  ghostImg.filter(GRAY);
   current = portrait;
   layer = createGraphics(windowWidth, windowHeight);
   drawCurrent();
@@ -111,12 +118,45 @@ function draw() {
   fill(0);
   textAlign(CENTER, CENTER);
   text(LABEL, width / 2, label.y + label.h / 2);
+
+  if (haunting) drawGhost();
+}
+
+function drawGhost() {
+  const off = min(width, height) * 0.22;
+  const tx = mouseX + (mouseX < width / 2 ? off : -off);
+  const ty = mouseY + off * 0.5;
+  const ease = 0.045;
+  const dx = tx - ghostX;
+  ghostX += dx * ease;
+  ghostY += (ty - ghostY) * ease;
+  if (abs(dx) > 1.5) ghostFace = dx > 0 ? 1 : -1;
+
+  const gw = min(width, height) * 0.16;
+  const gh = gw * (ghostImg.height / ghostImg.width);
+  const flick = 150 + sin(frameCount * 0.18) * 35 + sin(frameCount * 0.47) * 20;
+
+  push();
+  translate(ghostX, ghostY);
+  rotate(sin(frameCount * 0.02) * 0.06);
+  scale(ghostFace, 1);
+  tint(255, flick);
+  imageMode(CENTER);
+  image(ghostImg, 0, 0, gw, gh);
+  pop();
+  imageMode(CORNER);
 }
 
 function mousePressed() {
   const r = imageRect();
   if (mouseX < r.x || mouseX > r.x + r.w || mouseY < r.y || mouseY > r.y + r.h) return;
   current = current === portrait ? removedImg : portrait;
+  haunting = current === removedImg;
+  if (haunting) {
+    const r = imageRect();
+    ghostX = r.x + r.w / 2;
+    ghostY = r.y + r.h / 2;
+  }
   drawCurrent();
 }
 
