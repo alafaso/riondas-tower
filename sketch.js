@@ -140,12 +140,12 @@ function draw() {
 
 function spawnRock(i) {
   const img = rocksImgs[i];
-  const h = random(0.62, 0.96) * height;
+  const h = random(0.9, 1.3) * height;
   const w = h * (img.width / img.height);
   rocks.push({
     img: img,
-    x: random(10, width - w - 10),
-    y: random(10, height - h - 10),
+    x: random(-0.05 * w, width - 0.95 * w),
+    y: random(-0.05 * h, height - 0.95 * h),
     w: w,
     h: h,
     front: random() < 0.5
