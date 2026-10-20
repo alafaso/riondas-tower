@@ -136,7 +136,7 @@ function draw() {
 
 function spawnRock(i) {
   const img = rocksImgs[i];
-  const s = random(0.07, 0.17) * min(width, height);
+  const s = random(0.28, 0.5) * min(width, height);
   const w = s;
   const h = s * (img.height / img.width);
   rocks.push({
@@ -144,8 +144,7 @@ function spawnRock(i) {
     x: random(10, width - w - 10),
     y: random(10, height - h - 10),
     w: w,
-    h: h,
-    born: millis()
+    h: h
   });
 }
 
@@ -157,9 +156,7 @@ function updateRocks() {
   }
   noStroke();
   for (const r of rocks) {
-    const k = constrain((millis() - r.born) / 260, 0, 1);
-    const e = 1 - pow(1 - k, 3);
-    image(r.img, r.x, r.y, r.w * e, r.h * e);
+    image(r.img, r.x, r.y, r.w, r.h);
   }
 }
 
