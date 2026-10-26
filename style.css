@@ -80,12 +80,65 @@ body {
   padding: 10vh 5vw calc(16vh + 24px);
 }
 
+#gallery figure {
+  margin: 0;
+}
+
 #gallery video {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   background: #111;
   border: 1px solid rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+
+#gallery figcaption {
+  padding-top: 8px;
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+#video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.92);
+}
+
+#video-modal.open {
+  display: flex;
+  flex-direction: column;
+}
+
+#video-modal video {
+  max-width: 90vw;
+  max-height: 80vh;
+  background: #000;
+}
+
+.modal-caption {
+  margin-bottom: 12px;
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+#modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-family: Helvetica;
+  font-size: 28px;
+  line-height: 1;
   cursor: pointer;
 }
 

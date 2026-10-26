@@ -148,7 +148,12 @@ function drawGhost() {
 }
 
 function mousePressed(event) {
-  if (event && event.target && event.target.closest && event.target.closest(".scroll-arrow"))
+  if (
+    event &&
+    event.target &&
+    event.target.closest &&
+    (event.target.closest(".scroll-arrow") || event.target.closest("#video-modal"))
+  )
     return;
   const r = imageRect();
   if (mouseX < r.x || mouseX > r.x + r.w || mouseY < r.y || mouseY > r.y + r.h) return;
