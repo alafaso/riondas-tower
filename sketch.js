@@ -128,7 +128,7 @@ function drawCurrent() {
 
 function makeLabel() {
   const tw = textWidth(LABEL);
-  return { x: (width - (tw + 32)) / 2, y: height - 84, w: tw + 32, h: 48 };
+  return { x: (width - (tw + 32)) / 2, y: height - 134, w: tw + 32, h: 48 };
 }
 
 function draw() {
