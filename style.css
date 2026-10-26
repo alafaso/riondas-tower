@@ -30,6 +30,7 @@ body {
   font-size: 12px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  opacity: 0.75;
 }
 
 #to-page2 {
