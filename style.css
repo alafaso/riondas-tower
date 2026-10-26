@@ -90,8 +90,3 @@ canvas {
   z-index: 2;
   cursor: pointer;
 }
-
-.fg {
-  z-index: 4;
-  pointer-events: none;
-}

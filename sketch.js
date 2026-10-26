@@ -1,14 +1,5 @@
 const LABEL = "CLICK TO REMOVE HARRIET";
-const ROCK_DELAY = 15000;
 
-let rocksImgs = [];
-let rocks = [];
-let rockCells = [];
-let rockOrder = [];
-let rockTimes = [];
-let fg;
-let nextRock = 0;
-let startTime = 0;
 let portrait;
 let removedImg;
 let layer;
@@ -24,9 +15,6 @@ function preload() {
   portrait = loadImage(PORTRAIT_DATA);
   removedImg = loadImage(REMOVED_DATA);
   ghostImg = loadImage(encodeURI("assets/harriet by herself.png"));
-  for (let i = 1; i <= 10; i++) {
-    rocksImgs.push(loadImage(encodeURI("assets/rock " + i + ".png")));
-  }
 }
 
 function setup() {
@@ -35,19 +23,8 @@ function setup() {
   portrait.filter(GRAY);
   removedImg.filter(GRAY);
   ghostImg.filter(GRAY);
-  rocksImgs.forEach((r) => r.filter(GRAY));
-  startTime = millis();
-  planRocks();
   current = portrait;
   layer = createGraphics(windowWidth, windowHeight);
-  fg = createGraphics(windowWidth, windowHeight);
-  fg.elt.classList.add("fg");
-  fg.elt.style.position = "fixed";
-  fg.elt.style.top = "0";
-  fg.elt.style.left = "0";
-  fg.elt.style.zIndex = "5";
-  fg.elt.style.pointerEvents = "none";
-  document.body.appendChild(fg.elt);
   drawCurrent();
   textFont("Helvetica");
   textSize(22);
@@ -143,66 +120,6 @@ function draw() {
   text(LABEL, width / 2, label.y + label.h / 2);
 
   if (haunting) drawGhost();
-  updateRocks();
-}
-
-function planRocks() {
-  rockCells = [];
-  for (let r = 0; r < 2; r++) {
-    for (let c = 0; c < 5; c++) rockCells.push({ c: c, r: r });
-  }
-  for (let i = rockCells.length - 1; i > 0; i--) {
-    const j = floor(random(i + 1));
-    const t = rockCells[i];
-    rockCells[i] = rockCells[j];
-    rockCells[j] = t;
-  }
-  rockOrder = [];
-  for (let i = 0; i < 10; i++) rockOrder.push(i);
-  for (let i = rockOrder.length - 1; i > 0; i--) {
-    const j = floor(random(i + 1));
-    const t = rockOrder[i];
-    rockOrder[i] = rockOrder[j];
-    rockOrder[j] = t;
-  }
-  rockTimes = [];
-  let t = ROCK_DELAY;
-  for (let i = 0; i < 10; i++) {
-    t += random(800, 3000);
-    rockTimes.push(t);
-  }
-}
-
-function spawnRock(i, cell) {
-  const img = rocksImgs[i];
-  const h = random(1.2, 1.6) * height;
-  const w = h * (img.width / img.height);
-  const cw = width / 5;
-  const ch = height / 2;
-  const cx = (cell.c + 0.5) * cw + random(-0.3, 0.3) * cw;
-  const cy = (cell.r + 0.5) * ch + random(-0.25, 0.25) * ch;
-  rocks.push({
-    img: img,
-    x: cx - w / 2,
-    y: cy - h / 2,
-    w: w,
-    h: h,
-    front: random() < 0.5
-  });
-}
-
-function updateRocks() {
-  const elapsed = millis() - startTime;
-  while (nextRock < 10 && elapsed > rockTimes[nextRock]) {
-    spawnRock(rockOrder[nextRock], rockCells[nextRock]);
-    nextRock++;
-  }
-  noStroke();
-  fg.clear();
-  for (const r of rocks) {
-    if (r.front) fg.image(r.img, r.x, r.y, r.w, r.h);
-    else image(r.img, r.x, r.y, r.w, r.h);
-  }
 }
 
 function drawGhost() {
@@ -233,17 +150,6 @@ function drawGhost() {
 function mousePressed(event) {
   if (event && event.target && event.target.closest && event.target.closest("#to-page2"))
     return;
-  for (let i = rocks.length - 1; i >= 0; i--) {
-    const rk = rocks[i];
-    if (mouseX >= rk.x && mouseX <= rk.x + rk.w && mouseY >= rk.y && mouseY <= rk.y + rk.h) {
-      rocks.splice(i, 1);
-      spawnRock(
-        rocksImgs.indexOf(rk.img),
-        rockCells[floor(random(rockCells.length))]
-      );
-      return;
-    }
-  }
   const r = imageRect();
   if (mouseX < r.x || mouseX > r.x + r.w || mouseY < r.y || mouseY > r.y + r.h) return;
   current = current === portrait ? removedImg : portrait;
@@ -259,11 +165,6 @@ function mousePressed(event) {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   layer = createGraphics(windowWidth, windowHeight);
-  fg.resizeCanvas(windowWidth, windowHeight);
   drawCurrent();
   label = makeLabel();
-  for (const rk of rocks) {
-    rk.x = constrain(rk.x, 10, max(10, width - rk.w - 10));
-    rk.y = constrain(rk.y, 10, max(10, height - rk.h - 10));
-  }
 }
