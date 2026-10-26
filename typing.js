@@ -59,6 +59,13 @@ function maybeStart() {
   }
 }
 
+function updateBar() {
+  const bar = document.getElementById("credit-bar");
+  const r = document.getElementById("page2").getBoundingClientRect();
+  if (r.top < window.innerHeight * 0.5) bar.classList.add("visible");
+  else bar.classList.remove("visible");
+}
+
 const page2Observer = new IntersectionObserver((entries) => {
   for (const e of entries) {
     if (e.isIntersecting) {
@@ -69,5 +76,11 @@ const page2Observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.4 });
 
 page2Observer.observe(document.getElementById("page2"));
-window.addEventListener("scroll", maybeStart, { passive: true });
-maybeStart();
+function onScroll() {
+  maybeStart();
+  updateBar();
+}
+
+window.addEventListener("scroll", onScroll, { passive: true });
+setInterval(onScroll, 250);
+onScroll();
