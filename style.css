@@ -53,6 +53,10 @@ body {
   white-space: pre-wrap;
 }
 
+#typed .it {
+  font-style: italic;
+}
+
 .caret {
   display: inline-block;
   width: 0.55em;
