@@ -36,8 +36,37 @@ body {
 #page2 {
   position: relative;
   z-index: 10;
-  height: 100vh;
+  min-height: 100vh;
   background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#typed {
+  margin: 0;
+  padding: 12vh 6vw;
+  max-width: 62ch;
+  color: #fff;
+  font-size: clamp(15px, 1.5vw, 22px);
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: #fff;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 #footage {
