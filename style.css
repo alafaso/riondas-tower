@@ -44,6 +44,7 @@ body {
 }
 
 #typed {
+  font-family: Helvetica;
   margin: 0;
   padding: 12vh 6vw;
   max-width: 62ch;
