@@ -148,7 +148,7 @@ function drawGhost() {
 }
 
 function mousePressed(event) {
-  if (event && event.target && event.target.closest && event.target.closest("#to-page2"))
+  if (event && event.target && event.target.closest && event.target.closest(".scroll-arrow"))
     return;
   const r = imageRect();
   if (mouseX < r.x || mouseX > r.x + r.w || mouseY < r.y || mouseY > r.y + r.h) return;
