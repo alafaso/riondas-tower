@@ -230,7 +230,9 @@ function drawGhost() {
   imageMode(CORNER);
 }
 
-function mousePressed() {
+function mousePressed(event) {
+  if (event && event.target && event.target.closest && event.target.closest("#to-page2"))
+    return;
   for (let i = rocks.length - 1; i >= 0; i--) {
     const rk = rocks[i];
     if (mouseX >= rk.x && mouseX <= rk.x + rk.w && mouseY >= rk.y && mouseY <= rk.y + rk.h) {
