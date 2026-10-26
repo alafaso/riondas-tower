@@ -73,6 +73,22 @@ body {
   justify-content: center;
 }
 
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 10vh 5vw calc(16vh + 24px);
+}
+
+#gallery video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+
 #typed {
   font-family: Helvetica;
   margin: 0;
